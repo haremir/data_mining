@@ -1,4 +1,4 @@
 regtresyon for lung cancer.py
 catboost_info/*
-__pycache__/
-.sysproject/
+__pycache__/*
+.sysproject/*
