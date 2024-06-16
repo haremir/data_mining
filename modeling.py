@@ -399,9 +399,8 @@ def train_catboost_model_mixed(data):
 
 # kümeleme CART 
 def train_catboost_model_mixed_cluster(data):
-    
     print("-"*80, end="\n\n")
-    print("Burada şu anda CATBOAST algoritması çalışıyor karışık verilerle kümeleme için", end="\n\n")
+    print("Burada şu anda CATBOOST algoritması çalışıyor karışık verilerle kümeleme için", end="\n\n")
     print("-"*80, end="\n\n")
 
     # Bağımsız değişkenler (X) ve bağımlı değişken (y) ayrımı
@@ -415,7 +414,7 @@ def train_catboost_model_mixed_cluster(data):
     cat_features = ['GENDER']
 
     # CatBoost modelini oluştur
-    model = CatBoostClassifier(iterations=100, depth=6, learning_rate=0.1, loss_function='MultiClass', random_state=42, cat_features=cat_features, verbose=False)
+    model = CatBoostClassifier(iterations=100, depth=6, learning_rate=0.1, loss_function='MultiClass', random_state=42, verbose=False)
 
     # Modeli eğitim verisi ile eğit
     train_pool = Pool(X_train, y_train, cat_features=cat_features)
@@ -436,7 +435,6 @@ def train_catboost_model_mixed_cluster(data):
     print(confusion_matrix(y_test, y_pred))
 
     return model
-
 
 
 def train_catboost_model_categorical_cluster(data):

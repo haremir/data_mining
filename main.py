@@ -1,6 +1,7 @@
 # main.py
 
 import pandas as pd
+from association_analysis import main_association_analysis
 
 from preprocessing import (
     preprocess_numeric_data, 
@@ -9,8 +10,16 @@ from preprocessing import (
     preprocess_categorical_data, 
     clean_and_normalize_data, 
     preprocess_categorical_data_cluster,
+    
     balance_classes,
-    add_synthetic_data
+    add_synthetic_data,
+    
+    add_synthetic_data_numeric,
+    add_synthetic_data_categorical,
+    add_synthetic_data_mixed,
+    
+    preprocess_categorical_data_cluster_synthetic,
+    clean_and_normalize_data_cluster_synthetic
     )
 
 from visualization import (
@@ -49,9 +58,35 @@ from modeling import (
 def main():
     # Veri setini yükleme ve ön işleme adımları (preprocessing.py'den)
     
-    file_path = r'C:\Users\emirh\Desktop\bitirme_projesi\lung_cancer.xlsx'
-    cluster_results_file_path = r'C:\Users\emirh\Desktop\bitirme_projesi\kumeleme_sonuclari.xlsx'
-    
+    file_path = r'C:\Users\emirh\Desktop\DOSYALAR\veri_bilimi\bitirme_projesi\lung_cancer.xlsx'
+    cluster_results_file_path = r'C:\Users\emirh\Desktop\DOSYALAR\veri_bilimi\bitirme_projesi\kumeleme_sonuclari.xlsx'
+ 
+    # --------------------sentetik veriyle Kümeleme---------------
+    # Veri kümenizi yükleyin
+    df = pd.read_excel(cluster_results_file_path)
+
+    # Sentetik veri ekleyin
+    target_column = 'Cluster_KMeans'  # Hedef sütununuzu burada belirtin
+    """
+    print("-"*35,"sentetik veriyle olan bu","-"*35)
+    # Sadece numerik veri işleme
+    df_with_synthetic_data_numeric = add_synthetic_data_numeric(df, target_column)
+    df_numeric = preprocess_numeric_data(df_with_synthetic_data_numeric)
+    trained_model_numeric = train_decision_tree_model_with_numeric_data_cluster(df_numeric)
+
+    print("-"*35,"sentetik veriyle olan bu","-"*35)    # Sadece kategorik veri işleme
+    df_with_synthetic_data_categorical = add_synthetic_data_categorical(df, target_column)
+    df_categorical = preprocess_categorical_data_cluster_synthetic(df_with_synthetic_data_categorical)
+    trained_model_categorical = train_catboost_model_categorical_cluster(df_categorical)
+    """
+    print("-"*35 + " sentetik veriyle olan bu " + "-"*35)
+    # Normalizasyon ve temizlik işlemleri (karma veri seti için)
+    df_with_synthetic_data_mixed = add_synthetic_data_mixed(df, "Cluster_KMeans")
+    df_clean_normalized = clean_and_normalize_data_cluster_synthetic(df_with_synthetic_data_mixed)
+    trained_model_clean_normalized = train_catboost_model_mixed_cluster(df_clean_normalized)
+
+
+    """
     #------------------k-fold modelleri sentetik veriyle -------------
     print("-"*100, end="\n\n")
     print("Burada şu anda k-fold modelleri sentetik veriyle çalışıyor", end="\n\n")
@@ -71,6 +106,7 @@ def main():
     df_clean_normalized = add_synthetic_data(df_numeric, 'LUNG_CANCER')
     trained_model_clean_normalized = train_catboost_model_mixed_kFold(df_clean_normalized)
     """
+    """
     #------------------k-fold modelleri-------------
     print("-"*100, end="\n\n")
     print("Burada şu anda k-fold modelleri çalışıyor", end="\n\n")
@@ -87,7 +123,8 @@ def main():
     # Normalizasyon ve temizlik işlemleri
     df_clean_normalized = clean_and_normalize_data(file_path)
     trained_model_clean_normalized = train_catboost_model_mixed_kFold(df_clean_normalized)
-    
+    """
+    """
     #------------------sentetik veri ile çalışan modeller-------------
     print("-"*100, end="\n\n")
     print("Burada şu anda sentetik veriyle çalışan modelleri çalışıyor", end="\n\n")
@@ -106,7 +143,8 @@ def main():
     df_clean_normalized = clean_and_normalize_data(file_path)
     df_clean_normalized = add_synthetic_data(df_numeric, 'LUNG_CANCER')
     trained_model_clean_normalized = train_catboost_model_mixed(df_clean_normalized)
-  
+    """
+    """
     #------------------yeni modeller-------------
     print("-"*100, end="\n\n")
     print("Burada şu anda EMİR modelleri çalışıyor", end="\n\n")
@@ -124,7 +162,8 @@ def main():
     df_clean_normalized = clean_and_normalize_data(file_path)
     df_balanced = balance_classes(df_clean_normalized)
     trained_catboost_model_mixed_resample = train_catboost_model_mixed_resample(df_balanced)
-
+    """
+    """
     #------------------eski modeller-------------
     print("-"*100, end="\n\n")
     print("Burada şu anda ESKİ modeller çalışıyor", end="\n\n")
@@ -141,9 +180,9 @@ def main():
     df_clean_normalized = clean_and_normalize_data(file_path)
     trained_model_clean_normalized = train_catboost_model_mixed(df_clean_normalized)
     """
-    """
-    # --------------------Kümeleme---------------
     
+    # --------------------Kümeleme---------------
+    """
     print("-" * 80, end="\n\n\n\n\n\n\n\n")
     print("       BURADAN İTİBAREN KÜMELEMELERE GÖRE MODEL SONUÇLARI YER ALIYOR", end="\n\n\n\n\n\n\n\n")
     
@@ -158,8 +197,9 @@ def main():
     # Normalizasyon ve temizlik işlemleri
     df_clean_normalized = clean_and_normalize_data(cluster_results_file_path )
     trained_model_clean_normalized = train_catboost_model_mixed_cluster(df_clean_normalized)
+    
     """
-"""
+    """
     # Görselleştirmeler
     plot_age_distribution(df_clean_normalized)
     plot_smoking_lung_cancer_relation(df_clean_normalized)
@@ -169,7 +209,20 @@ def main():
     plot_age_lung_cancer_relation(df_clean_normalized)
     plot_boxplot_by_lung_cancer_status(df_clean_normalized)
     #Óplot_pairplot_by_lung_cancer_status(df_clean_normalized)
-"""
-
+    """
+    
+    
+    
+    
+    # Görselleştirmeler
+    #plot_age_distribution(df_clean_normalized)
+    #plot_smoking_lung_cancer_relation(df_clean_normalized)
+    #plot_gender_lung_cancer_relation(df_clean_normalized)
+    #plot_allergy_wheezing_relation(df_clean_normalized)
+    #plot_categorical_distributions(df_clean_normalized)
+    #plot_age_lung_cancer_relation(df_clean_normalized)
+    #plot_boxplot_by_lung_cancer_status(df_clean_normalized)
+    #Óplot_pairplot_by_lung_cancer_status(df_clean_normalized)
+    
 if __name__ == "__main__":
     main()
